@@ -52,7 +52,7 @@ public class WriteResampled
 						File.separator + "dirk" 
 						+ File.separator + "resample" + File.separator + 
 						"resampled" + (discrete ? "" :"continious") + "_" + 
-						(allSameDepth ? "" : "sameDepth") +  ".txt"
+						(allSameDepth ? "sameDepth" : "") +  ".txt"
 						);
 		
 		System.out.println(outFile.getAbsolutePath());

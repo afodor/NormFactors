@@ -12,9 +12,7 @@ writeGraphs <- function( rawFilePath, normFilePath, outFileName )
 	myDist <- bcdist(myT)
 	myDistNorm <- bcdist(myTNorm)
 	
-	myPCOA <- pcoa(myDist)
-	myPCOA_Norm <- pcoa(myDistNorm)
-	
+	myPCOANorm <- pcoa(myDistNorm)
 	
 	rowSums <- apply(myT, 1, sum)
 
@@ -31,7 +29,7 @@ writeGraphs <- function( rawFilePath, normFilePath, outFileName )
 	}
 	
 	pdf(file = outFileName, width=6, height=6)
-	par(mfroc=c(4,2))
+	#par(mfrow = c(4,2))
 	
 	rVal <- cor( myDist, countDist, method="spear" );
 	title <- paste("raw r^2=", round( rVal * rVal ,digits=3))
@@ -41,15 +39,11 @@ writeGraphs <- function( rawFilePath, normFilePath, outFileName )
 	title <- paste("norm r^2=", round( rVal * rVal ,digits=3))
 	plot(myDistNorm, countDist, main=title, xlab="BC Dist", ylab = "difference in number of sequences")
 	
-	rVal <- cor( log10(rowSums), myPCOA$vectors[,1], method="spear" );
-	title <- paste("raw r^2=", round( rVal * rVal ,digits=3))
-	plot(log10(rowSums), myPCOA$vectors[,1], xlab="log10(Number of Sequences)", ylab = "PCoA1", main=title)
-	
 	rVal <- cor( log10(rowSums), myPCOANorm$vectors[,1], method="spear" );
-	title <- paste("raw r^2=", round( rVal * rVal ,digits=3))
-	plot(log10(rowSums), myPCOA$vectors[,1], xlab="log10(Number of Sequences)", ylab = "PCoA1", main=title)
-			
+	title <- paste("r^2=", round( rVal * rVal ,digits=3))
+	plot(log10(rowSums), myPCOANorm$vectors[,1], xlab="log10(Number of Sequences)", ylab = "PCoA1", main=title)
+	dev.off();			
 }
 
-writeGraphs(
+writeGraphs("resampled_.txt", "resampledcontinious_.txt", "continiousDiffNumbers.pdf")
  
