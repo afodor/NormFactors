@@ -51,7 +51,7 @@ public class WriteResampled
 						+ File.separator + "risk" + 
 						File.separator + "dirk" 
 						+ File.separator + "resample" + File.separator + 
-						"resampledMaxDepth" + (discrete ? "" :"continious") + "_" + 
+						"resampled" + (discrete ? "" :"continious") + "_" + 
 						(allSameDepth ? "" : "sameDepth") +  ".txt"
 						);
 		
