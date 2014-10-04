@@ -16,12 +16,16 @@ public class WriteResampled
 	
 	public static void main(String[] args) throws Exception
 	{
-		OtuWrapper wrapper = new OtuWrapper(
+		File inFile = 
+				new File(
 				ConfigReader.getBigDataScalingFactorsDir() 
 				+ File.separator + "risk" + 
 				File.separator + "dirk" 
 				+ File.separator +
 				"may2013_refOTU_Table-subsetTaxaAsColumnsstoolOnly.filtered.txt");
+		
+		System.out.println("Reading " + inFile);
+		OtuWrapper wrapper = new OtuWrapper( inFile);
 		
 		int sampleID = wrapper.getSampleIdWithMostCounts();
 		int numCounts = wrapper.getCountsForSample(sampleID);
@@ -31,21 +35,29 @@ public class WriteResampled
 		System.out.println(sampleID + " " + numCounts);
 		System.out.println(minSampleID + " " + minNumCounts);
 		List<Integer> list = wrapper.getSamplingList(sampleID);
-		writeResampledFile(wrapper, list,true,sampleID, numCounts);
-		writeResampledFile(wrapper, list,false,sampleID, numCounts);
+		writeResampledFile(wrapper, list,true,true,sampleID, numCounts);
+		writeResampledFile(wrapper, list,true,false,sampleID, numCounts);
+		writeResampledFile(wrapper, list,false,true,sampleID, numCounts);
+		writeResampledFile(wrapper, list,false,false,sampleID, numCounts);
 	}
 	
 	private static void writeResampledFile(OtuWrapper wrapper, 
-				List<Integer> resampledList, boolean discrete,  int maxIndex, int maxDepth) throws Exception
+				List<Integer> resampledList, boolean discrete, boolean allSameDepth,
+				int maxIndex, int maxDepth) throws Exception
 	{
-
-		BufferedWriter writer = new BufferedWriter(new FileWriter(new File(
-				ConfigReader.getBigDataScalingFactorsDir() 
-				+ File.separator + "risk" + 
-				File.separator + "dirk" 
-				+ File.separator + "resample" + File.separator + 
-				"resampledMaxDepth" + (discrete ? "" :"continious") +  ".txt"
-				)));
+		File outFile = 
+				new File(
+						ConfigReader.getBigDataScalingFactorsDir() 
+						+ File.separator + "risk" + 
+						File.separator + "dirk" 
+						+ File.separator + "resample" + File.separator + 
+						"resampledMaxDepth" + (discrete ? "" :"continious") + "_" + 
+						(allSameDepth ? "" : "sameDepth") +  ".txt"
+						);
+		
+		System.out.println(outFile.getAbsolutePath());
+		
+		BufferedWriter writer = new BufferedWriter(new FileWriter(outFile));
 		
 		writer.write( "sample" );
 		
@@ -59,8 +71,10 @@ public class WriteResampled
 			int depth = wrapper.getCountsForSample(x);
 			System.out.println( x + " depth= " + depth);
 			writer.write("sample_" + depth);
-			int[] counts = discrete ? resample(wrapper, resampledList, maxDepth) :
-					 resampleContinious(wrapper, resampledList, x,maxIndex,maxDepth );
+			int[] counts = 
+					discrete ? resample(wrapper, resampledList, 
+							allSameDepth ? maxDepth : depth) :
+					 resampleContinious(wrapper, resampledList, x,maxIndex,maxDepth, allSameDepth );
 			
 			for( int y=0; y < counts.length; y++)
 				writer.write("\t" + counts[y]);
@@ -74,11 +88,15 @@ public class WriteResampled
 	}
 	
 	public static int[] resampleContinious(OtuWrapper wrapper, List<Integer> resampleList, int thisSampleId,
-			int maxSampleID,int maximumDepth) throws Exception
+			int maxSampleID,int maximumDepth, boolean allSameDepth) throws Exception
 	{
 		List<Double> list = wrapper.getDataPointsUnnormalized().get(maxSampleID);
 		int[] a = new int[wrapper.getOtuNames().size()];
-		double scaleFactor = ((double)wrapper.getCountsForSample(thisSampleId)) / maximumDepth;
+		double scaleFactor = 1;
+		
+		if(! allSameDepth)
+			scaleFactor = 
+			((double)wrapper.getCountsForSample(thisSampleId)) / maximumDepth;
 		
 		// we arbitrarily set the dispersion factor to 2;
 		// todo: Get this from some dateset
