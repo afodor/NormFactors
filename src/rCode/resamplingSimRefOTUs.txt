@@ -58,11 +58,10 @@ writeGraphs <- function( rawFilePath, normFilePath, outFileName )
 
 writeGraphs("resampled_.txt", "resampled_rarified.txt", 
 			"resampledToRarified.pdf")
-		
 
 writeGraphs("resampled_.txt", "resampled_relativeAbundance.txt", 
 			"resampledToRelativeAbundance.pdf")
-
+			
 writeGraphs("resampledcontinious_sameDepth.txt", "resampledcontinious_sameDepthrarified.txt",
 			"continousToRarifiedSameDepth.pdf")
 
