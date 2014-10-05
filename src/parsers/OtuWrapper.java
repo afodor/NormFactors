@@ -76,15 +76,12 @@ public class OtuWrapper
 	public void writeRarifiedSpreadhseet(File filepath, boolean withReplacement, int depth) throws Exception
 	{
 		Random random = new Random(24231);
-		int minIndex = getSampleIdWithMinCounts();
-		
 		
 		int rarificaitonDepth = depth;
 		if( depth <= 0)
-		{
-			depth = getCountsForSample(minIndex);
+		{	int minIndex = getSampleIdWithMinCounts();
+			rarificaitonDepth = getCountsForSample(minIndex);
 		}
-		
 		
 		BufferedWriter writer = new BufferedWriter(new FileWriter(filepath));
 		

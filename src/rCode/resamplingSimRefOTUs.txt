@@ -45,5 +45,6 @@ writeGraphs <- function( rawFilePath, normFilePath, outFileName )
 	dev.off();			
 }
 
-writeGraphs("resampled_.txt", "resampledcontinious_.txt", "continiousDiffNumbers.pdf")
+writeGraphs("resampledcontinious_.txt", "resampledcontinious_rarified.txt", 
+			"continiousToRarified.pdf")
  
