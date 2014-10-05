@@ -53,6 +53,30 @@ writeGraphs <- function( rawFilePath, normFilePath, outFileName )
 	#title <- paste(outFileName, " norm otu Mean Vs Varaiance " );
 	#plot( apply(myTNorm, 2, mean) , apply(myTNorm, 2, var), xlab ="mean", ylab="var", main=title  ) 
 	
+	#RLE normalization 
+	library("edgeR")
+	edgeRT <- myT
+	edgeRT <- edgeRT + 1
+	edgeRT <- t( edgeRT )
+	myEdgeR = DGEList(counts=edgeRT)
+	myNormFactors = calcNormFactors(myEdgeR, method = "RLE")
+	myCommonDisp = estimateCommonDisp(myNormFactors);
+	myPseudoCounts = myCommonDisp$pseudo.counts;
+	myPseudoCounts = t(myPseudoCounts)
+	myDist <- bcdist(myPseudoCounts)
+	myPCA <- pcoa(myDist)
+	
+	rVal <- cor( myDist, countDist, method="spear" );
+	title <- paste(paste( outFileName,  " edgeR r^2="), round( rVal * rVal ,digits=3))
+	plot(myDist, countDist, main=title, xlab="BC Dist", ylab = "difference in number of sequences")
+	
+	rVal <- cor( log10(rowSums), myPCA$vectors[,1], method="spear" );
+	title <- paste(outFileName, "r^2=", round( rVal * rVal ,digits=3), " " , myPCA$values$Rel_corr_eig[1] )
+	plot(log10(rowSums), myPCA$vectors[,1], xlab="log10(Number of Sequences)", ylab = "PCoA1", main=title)
+	boxplot(myDist)
+	title(paste(outFileName, " edgeR distances"))
+	hist(myPCA$vectors[,1],breaks=15)
+	
 	dev.off();			
 }
 
