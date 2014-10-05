@@ -32,17 +32,21 @@ writeGraphs <- function( rawFilePath, normFilePath, outFileName )
 	#par(mfrow = c(4,2))
 	
 	rVal <- cor( myDist, countDist, method="spear" );
-	title <- paste("raw r^2=", round( rVal * rVal ,digits=3))
+	title <- paste(paste( outFileName,  " raw r^2="), round( rVal * rVal ,digits=3))
 	plot(myDist, countDist, main=title, xlab="BC Dist", ylab = "difference in number of sequences")
 	
 	rVal <- cor( myDistNorm, countDist, method="spear" );
-	title <- paste("norm r^2=", round( rVal * rVal ,digits=3))
+	title <- paste(paste(outFileName, " norm r^2="), round( rVal * rVal ,digits=3))
 	plot(myDistNorm, countDist, main=title, xlab="BC Dist", ylab = "difference in number of sequences")
 	
 	rVal <- cor( log10(rowSums), myPCOANorm$vectors[,1], method="spear" );
-	title <- paste("r^2=", round( rVal * rVal ,digits=3))
+	title <- paste(paste(outFileName, "r^2="), round( rVal * rVal ,digits=3))
 	plot(log10(rowSums), myPCOANorm$vectors[,1], xlab="log10(Number of Sequences)", ylab = "PCoA1", main=title)
+	boxplot(myDist, myDistNorm)
+	hist(myPCOANorm$vectors[,1],breaks=15)
 	dev.off();			
+	
+	
 }
 
 writeGraphs("resampledcontinious_.txt", "resampledcontinious_rarified.txt", 
