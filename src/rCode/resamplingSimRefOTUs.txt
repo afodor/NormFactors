@@ -7,11 +7,8 @@ setwd("G:\\BigDataScalingFactors\\risk\\dirk\\resample");
 
 writeGraphs <- function( rawFilePath, normFilePath, outFileName )
 {
-	myT <- read.table(rawFilePath, sep="\t", header=TRUE,row.names=1)
-	
-	myT <- read.table(rawFilePath, sep="\t", header=TRUE,row.names=1, colClasses =rep("numeric", ncol(myT) )
-		
-	myTNorm <- read.table(normFilePath , sep="\t", header=TRUE, row.names=1, colClasses =rep("numeric", ncol(myT) )
+	myT <- read.table(rawFilePath, sep="\t", header=TRUE,row.names=1,stringsAsFactors=F)
+	myTNorm <-read.table(normFilePath , sep="\t", header=TRUE,row.names=1, stringsAsFactors=F)
 	
 	myDist <- bcdist(myT)
 	myDistNorm <- bcdist(myTNorm)
@@ -44,7 +41,7 @@ writeGraphs <- function( rawFilePath, normFilePath, outFileName )
 	plot(myDistNorm, countDist, main=title, xlab="BC Dist", ylab = "difference in number of sequences")
 	
 	rVal <- cor( log10(rowSums), myPCOANorm$vectors[,1], method="spear" );
-	title <- paste(paste(outFileName, "r^2="), round( rVal * rVal ,digits=3))
+	title <- paste(outFileName, "r^2=", round( rVal * rVal ,digits=3), " " , myPCOANorm$values$Rel_corr_eig[1] )
 	plot(log10(rowSums), myPCOANorm$vectors[,1], xlab="log10(Number of Sequences)", ylab = "PCoA1", main=title)
 	boxplot(myDist, myDistNorm)
 	title(paste(outFileName, " distances vs. norm distances"))
@@ -53,11 +50,21 @@ writeGraphs <- function( rawFilePath, normFilePath, outFileName )
 	title <- paste(outFileName, " raw otu Mean Vs Varaiance " );
 	plot( apply(myT, 2, mean) , apply(myT, 2, var), xlab ="mean", ylab="var", main=title  ) 
 	
-	title <- paste(outFileName, " norm otu Mean Vs Varaiance " );
-	plot( apply(myTNorm, 2, mean) , apply(myTNorm, 2, var), xlab ="mean", ylab="var", main=title  ) 
+	#title <- paste(outFileName, " norm otu Mean Vs Varaiance " );
+	#plot( apply(myTNorm, 2, mean) , apply(myTNorm, 2, var), xlab ="mean", ylab="var", main=title  ) 
 	
 	dev.off();			
 }
+
+writeGraphs("resampled_.txt", "resampled_rarified.txt", 
+			"resampledToRarified.pdf")
+		
+
+writeGraphs("resampled_.txt", "resampled_relativeAbundance.txt", 
+			"resampledToRelativeAbundance.pdf")
+
+writeGraphs("resampledcontinious_sameDepth.txt", "resampledcontinious_sameDepthrarified.txt",
+			"continousToRarifiedSameDepth.pdf")
 
 writeGraphs("resampledcontinious_.txt", "resampledcontinious_rarified.txt", 
 			"continiousToRarified.pdf")
