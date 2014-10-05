@@ -103,7 +103,7 @@ public class WriteResampled
 		for(int x=0; x < a.length;x++)
 		{
 			double mean = list.get(x);
-			double sd = Math.sqrt(2* mean);
+			double sd = mean;
 			int outVal =(int) (scaleFactor * (  RANDOM.nextGaussian() * sd + mean ));
 			if( outVal < 0 )
 				outVal =0;

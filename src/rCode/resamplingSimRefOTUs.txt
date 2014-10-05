@@ -44,6 +44,14 @@ writeGraphs <- function( rawFilePath, normFilePath, outFileName )
 	plot(log10(rowSums), myPCOANorm$vectors[,1], xlab="log10(Number of Sequences)", ylab = "PCoA1", main=title)
 	boxplot(myDist, myDistNorm)
 	hist(myPCOANorm$vectors[,1],breaks=15)
+	
+	title <- paste(outFileName, " raw otu Mean Vs Varaiance " );
+	plot( apply(myT, 2, mean) , apply(myT, 2, var), xlab ="mean", ylab="var", main=title  ) 
+	
+	title <- paste(outFileName, " norm otu Mean Vs Varaiance " );
+	plot( apply(myTNorm, 2, mean) , apply(myTNorm, 2, var), xlab ="mean", ylab="var", main=title  ) 
+	
+	
 	dev.off();			
 	
 	
