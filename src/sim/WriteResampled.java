@@ -11,7 +11,7 @@ import parsers.OtuWrapper;
 import utils.ConfigReader;
 
 public class WriteResampled
-{
+{ 	
 	private static final Random RANDOM = new Random(17);
 	
 	public static void main(String[] args) throws Exception

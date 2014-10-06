@@ -88,29 +88,21 @@ writeGraphs <- function( rawFilePath, normFilePath, rarifiedFilePath, outFileNam
 	rVal <- cor( log10(rowSums), myPCAEdge$vectors[,1], method="spear" );
 	title <- paste("9: edgeR" , outFileName, "r^2=", round( rVal * rVal ,digits=3), " " , round(myPCAEdge$values$Rel_corr_eig[1],digits=3) )
 	plot(log10(rowSums), myPCAEdge$vectors[,1], xlab="log10(Number of Sequences)", ylab = "PCoA1", main=title)
-	boxplot(myDist, myDistNorm, myDistRare, myDistEdge)
-	title("10: " , paste(outFileName, " edgeR distances"))
-	hist(myPCAEdge$vectors[,1],breaks=15)
+	hist(myPCAEdge$vectors[,1],breaks=15, main="Edge PCOA histogram")
+	
+	title<- ("11: bray-curtis distances")
+	boxplot(myDist, myDistNorm, myDistRare, myDistEdge, main=title, names=c("raw","norm","rarified","edgeR"))
+	
 	
 	dev.off();			
 }
 
 writeGraphs("CF_LONG.txt", "CF_LONGrelativeAbundance.txt", "CF_LONGrarified.txt", "CF_LONG.pdf")
 
-writeGraphs("resampled_.txt", "resampled_rarified.txt", 
-			"resampledToRarified.pdf")
-
-writeGraphs("resampled_.txt", "resampled_relativeAbundance.txt", 
-			"resampledToRelativeAbundance.pdf")
+writeGraphs("resampled_.txt","resampled_relativeAbundance.txt","resampled_rarified.txt", 
+			"resampled.pdf")
 			
-writeGraphs("resampledcontinious_sameDepth.txt", "resampledcontinious_sameDepthrarified.txt",
-			"continousToRarifiedSameDepth.pdf")
-
-writeGraphs("resampledcontinious_.txt", "resampledcontinious_rarified.txt", 
-			"continiousToRarified.pdf")
-			
-writeGraphs("resampledcontinious_.txt", "resampledcontinious_relativeAbundance.txt", 
-			"continiousToRelativeAbundance.pdf")
-			
-
- 
+writeGraphs("may2013_refOTU_Table-subsetTaxaAsColumnsstoolOnly.filtered.txt",
+		"may2013_refOTU_Table-subsetTaxaAsColumnsstoolOnly.filteredrelativeAbundance.txt",
+					"may2013_refOTU_Table-subsetTaxaAsColumnsstoolOnly.filteredrarified.txt", 
+			"risk.pdf")
