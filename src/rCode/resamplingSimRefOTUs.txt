@@ -56,11 +56,14 @@ writeGraphs <- function( rawFilePath, normFilePath, rarifiedFilePath, outFileNam
 	title <- paste("5: rare " ,outFileName, "r^2=", round( rVal * rVal ,digits=3), " " , round( myPCARare$values$Rel_corr_eig[1],digits=3) )
 	plot(log10(rowSums), myPCARare$vectors[,1], xlab="log10(Number of Sequences)", ylab = "PCoA1", main=title)
 	
-	hist(myPCOANorm$vectors[,1],breaks=15)
-	title(paste("6: " ,outFileName, " NORM First PCOA"))
+	title <- paste("6A: " ,outFileName, " NORM First PCOA")
+	hist(myPCOANorm$vectors[,1],breaks=15,main=title)
+	
+	title <- paste("6B: " ,outFileName, " Rare First PCOA")
+	hist(myPCARare$vectors[,1],breaks=15,main=title)
 	
 	title <- paste("7: " ,outFileName, " raw otu Mean Vs Varaiance " );
-	plot( apply(myT, 2, mean) , apply(myT, 2, var), xlab ="mean", ylab="var", main=title  ) 
+	plot( log10( apply(myT, 2, mean)+1) , log10(apply(myT, 2, var)+1), xlab ="mean", ylab="var", main=title  ) 
 	
 	#title <- paste(outFileName, " norm otu Mean Vs Varaiance " );
 	#plot( apply(myTNorm, 2, mean) , apply(myTNorm, 2, var), xlab ="mean", ylab="var", main=title  ) 

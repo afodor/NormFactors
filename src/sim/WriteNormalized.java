@@ -11,10 +11,11 @@ public class WriteNormalized
 	{
 		writeOne("CF_LONG.txt", -1);
 		
+		/*
 		writeOne("resampledcontinious_.txt", -1);
 		writeOne("resampledcontinious_sameDepth.txt", 4181);
 		writeOne("resampled_.txt", -1);
-		writeOne("resampled_sameDepth.txt", 4181);
+		writeOne("resampled_sameDepth.txt", 4181);*/
 	}
 	
 	private static void writeOne(String rawFileName, int rarifcationDepth) throws Exception
@@ -33,7 +34,7 @@ public class WriteNormalized
 				+ File.separator + "risk" 
 				+ File.separator + "dirk" 
 				+ File.separator + "resample" + File.separator + 
-						rawFileName.replaceAll(".txt", "") + "relativeAbundance.txt"));
+						rawFileName.replaceAll(".txt", "") + "relativeAbundance.txt"),false);
 		
 		wrapper.writeRarifiedSpreadhseet(new File(ConfigReader.getBigDataScalingFactorsDir() 
 				+ File.separator + "risk" 

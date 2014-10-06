@@ -1597,8 +1597,16 @@ public class OtuWrapper
 		writer.close();
 	}
 
-	public void writeNormalizedDataToFile(File file) throws Exception
+	public void writeNormalizedDataToFile(File file, boolean scaleToOne) throws Exception
 	{
+		int minCount = 1;
+		
+		if( ! scaleToOne)
+		{
+			int minIndex = getSampleIdWithMinCounts();
+			minCount = getCountsForSample(minIndex);
+		}
+		
 		BufferedWriter writer = new BufferedWriter(new FileWriter(file));
 
 		writer.write("sample");
@@ -1613,7 +1621,7 @@ public class OtuWrapper
 			writer.write(sampleNames.get(x));
 
 			for (int y = 0; y < otuNames.size(); y++)
-				writer.write("\t" + dataPointsNormalized.get(x).get(y));
+				writer.write("\t" + minCount * dataPointsNormalized.get(x).get(y));
 
 			writer.write("\n");
 		}
@@ -2116,8 +2124,8 @@ public class OtuWrapper
 			assertNum(totalCounts, dataPointsUnnormalized);
 		}
 
-		avgNumber = ((double) totalCounts) / dataPointsNormalized.size();
-		//avgNumber =1;	
+		//avgNumber = ((double) totalCounts) / dataPointsNormalized.size();
+		avgNumber =1;	
 		
 		for (x = 0; x < dataPointsUnnormalized.size(); x++)
 		{
