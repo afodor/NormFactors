@@ -3,7 +3,7 @@ library("ape")
 
 rm(list=ls())
 
-setwd("G:\\BigDataScalingFactors\\risk\\dirk\\resample");
+setwd("C:\\BigDataScalingFactors\\risk\\dirk\\resample");
 
 writeGraphs <- function( rawFilePath, normFilePath, outFileName )
 {
@@ -63,22 +63,24 @@ writeGraphs <- function( rawFilePath, normFilePath, outFileName )
 	myCommonDisp = estimateCommonDisp(myNormFactors);
 	myPseudoCounts = myCommonDisp$pseudo.counts;
 	myPseudoCounts = t(myPseudoCounts)
-	myDist <- bcdist(myPseudoCounts)
-	myPCA <- pcoa(myDist)
+	myDistEdge <- bcdist(myPseudoCounts)
+	myPCAEdge <- pcoa(myDistEdge)
 	
-	rVal <- cor( myDist, countDist, method="spear" );
+	rVal <- cor( myDistEdge, countDist, method="spear" );
 	title <- paste(paste( outFileName,  " edgeR r^2="), round( rVal * rVal ,digits=3))
-	plot(myDist, countDist, main=title, xlab="BC Dist", ylab = "difference in number of sequences")
+	plot(myDistEdge, countDist, main=title, xlab="BC Dist", ylab = "difference in number of sequences")
 	
-	rVal <- cor( log10(rowSums), myPCA$vectors[,1], method="spear" );
-	title <- paste(outFileName, "r^2=", round( rVal * rVal ,digits=3), " " , myPCA$values$Rel_corr_eig[1] )
-	plot(log10(rowSums), myPCA$vectors[,1], xlab="log10(Number of Sequences)", ylab = "PCoA1", main=title)
-	boxplot(myDist)
+	rVal <- cor( log10(rowSums), myPCAEdge$vectors[,1], method="spear" );
+	title <- paste("edgeR" , outFileName, "r^2=", round( rVal * rVal ,digits=3), " " , round(myPCAEdge$values$Rel_corr_eig[1],digits=3) )
+	plot(log10(rowSums), myPCAEdge$vectors[,1], xlab="log10(Number of Sequences)", ylab = "PCoA1", main=title)
+	boxplot(myDist, myDistNorm, myDistEdge)
 	title(paste(outFileName, " edgeR distances"))
-	hist(myPCA$vectors[,1],breaks=15)
+	hist(myPCAEdge$vectors[,1],breaks=15)
 	
 	dev.off();			
 }
+
+writeGraphs("CF_LONG.txt", "CF_LONGrarified.txt", "CF_LONGTOrarified.pdf")
 
 writeGraphs("resampled_.txt", "resampled_rarified.txt", 
 			"resampledToRarified.pdf")

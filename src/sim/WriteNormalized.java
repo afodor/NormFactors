@@ -9,6 +9,8 @@ public class WriteNormalized
 {
 	public static void main(String[] args) throws Exception
 	{
+		writeOne("CF_LONG.txt", -1);
+		
 		writeOne("resampledcontinious_.txt", -1);
 		writeOne("resampledcontinious_sameDepth.txt", 4181);
 		writeOne("resampled_.txt", -1);
