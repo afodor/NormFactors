@@ -97,6 +97,9 @@ writeGraphs <- function( rawFilePath, normFilePath, rarifiedFilePath, outFileNam
 	dev.off();			
 }
 
+writeGraphs("rnaResampledNonSparse.txt", "rnaResampledNonSparserelativeAbundance.txt", "rnaResampledNonSparserarified.txt", "rnaSeqNonSparse.pdf")
+
+
 writeGraphs("rnaResampled.txt", "rnaResampledrelativeAbundance.txt", "rnaResampledrarified.txt", "rnaSeq.pdf")
 
 
