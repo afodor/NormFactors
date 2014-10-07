@@ -3,7 +3,7 @@ library("ape")
 
 rm(list=ls())
 
-setwd("C:\\BigDataScalingFactors\\risk\\dirk\\resample");
+setwd("D:\\BigDataScalingFactors\\risk\\dirk\\resample");
 
 writeGraphs <- function( rawFilePath, normFilePath, rarifiedFilePath, outFileName )
 {
@@ -96,6 +96,9 @@ writeGraphs <- function( rawFilePath, normFilePath, rarifiedFilePath, outFileNam
 	
 	dev.off();			
 }
+
+writeGraphs("rnaResampled.txt", "rnaResampledrelativeAbundance.txt", "rnaResampledrarified.txt", "rnaSeq.pdf")
+
 
 writeGraphs("CF_LONG.txt", "CF_LONGrelativeAbundance.txt", "CF_LONGrarified.txt", "CF_LONG.pdf")
 
