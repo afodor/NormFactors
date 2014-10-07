@@ -2169,6 +2169,23 @@ public class OtuWrapper
 		//System.out.println( getOtuNames().get(taxaIndex) + " " + f + " " + getSampleNames().size() );
 		return f / getSampleNames().size();
 	}
+	
+
+	public float getFractionZeroForSample(int sampleIndex ) 
+	{
+		float f =0;
+		
+		for( int x=0; x < getOtuNames().size(); x++)
+			if( dataPointsUnnormalized.get(sampleIndex).get(x) < 0.001  )
+				f = f +1;
+		
+		//System.out.println( getOtuNames().get(taxaIndex) + " " + f + " " + getSampleNames().size() );
+		return f / getSampleNames().size();
+	}
+	
+	
+	
+	
 
 	private static void assertNoZeros(List<List<Double>> dataPointsUnnormalized)
 			throws Exception

@@ -23,9 +23,10 @@ public class WriteRNA
 		
 		int sampleID = wrapper.getSampleIdWithMostCounts();
 		int numCounts = wrapper.getCountsForSample(sampleID);
-		System.out.println(numCounts);
-		List<Integer> list = wrapper.getSamplingList(sampleID);
-		writeResampledFile(wrapper, list, sampleID, numCounts);
+		
+		System.out.println(numCounts + " " + wrapper.getFractionZeroForSample(sampleID) + " " + wrapper.getOtuNames().size());
+		//List<Integer> list = wrapper.getSamplingList(sampleID);
+		//writeResampledFile(wrapper, list, sampleID, numCounts);
 		
 	}
 	
