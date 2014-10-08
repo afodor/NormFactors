@@ -1,5 +1,9 @@
 library("ecodist")
 library("ape")
+library("edgeR")
+library("DESeq2")
+library("phyloseq")
+	
 
 rm(list=ls())
 setwd("C:\\BigDataScalingFactors\\risk\\dirk\\resample");
@@ -19,6 +23,8 @@ writeDistances <- function(  rawFilePath, normFilePath, rarifiedFilePath, outFil
 	numIncluded <- vector();
 	rawDistances <- vector();
 	normDistances <- vector();
+	edgeRDistances <- vector();
+	deseqDistances <- vector();
 	rarifiedDistances <- vector();
 
 	myT <- read.table(rawFilePath, sep="\t", header=TRUE,row.names=1,stringsAsFactors=F)
@@ -26,7 +32,7 @@ writeDistances <- function(  rawFilePath, normFilePath, rarifiedFilePath, outFil
 	myTRarified <- read.table(rarifiedFilePath , sep="\t", header=TRUE,row.names=1, stringsAsFactors=F)
 	index <- 1
 	
-	for( i  in seq(50,200,50))
+	for( i  in seq(50,2000,50))
 	{
 		myTSub <- stripRare(myT,i)
 		myTNormSub <- stripRare(myTNorm, i)
@@ -38,12 +44,21 @@ writeDistances <- function(  rawFilePath, normFilePath, rarifiedFilePath, outFil
 		
 		numIncluded[index] <- i;
 		
-		
+		edgeRT <- myTSub
+		edgeRT <- edgeRT + 1
+		edgeRT <- t( edgeRT )
+		myEdgeR = DGEList(counts=edgeRT)
+		myNormFactors = calcNormFactors(myEdgeR, method = "RLE")
+		myCommonDisp = estimateCommonDisp(myNormFactors);
+		myPseudoCounts = myCommonDisp$pseudo.counts;
+		myPseudoCounts = t(myPseudoCounts)
+		edgeRDistances[index] <- mean(bcdist(myPseudoCounts))
+			
 		index = index + 1;
 		
 	}
 	
-	dFrame <- data.frame( numIncluded ,rawDistances, normDistances , rarifiedDistances ) 
+	dFrame <- data.frame( numIncluded ,rawDistances, normDistances , rarifiedDistances, edgeRDistances) 
 	write.table( dFrame, file=outFilePath, row.names=FALSE, sep ="\t")
 }
 
