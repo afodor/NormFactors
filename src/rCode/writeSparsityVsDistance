@@ -1,3 +1,6 @@
+library("ecodist")
+library("ape")
+
 rm(list=ls())
 setwd("C:\\BigDataScalingFactors\\risk\\dirk\\resample");
 
@@ -12,7 +15,26 @@ stripRare <- function( myT, numToKeep )
 	return (myT)
 }
 
-#getDistances (  rawFilePath, normFilePath, rarifiedFilePath )
+getDistances <- function(  rawFilePath, normFilePath, rarifiedFilePath )
+{
+	myT <- read.table(rawFilePath, sep="\t", header=TRUE,row.names=1,stringsAsFactors=F)
+	myTNorm <-read.table(normFilePath , sep="\t", header=TRUE,row.names=1, stringsAsFactors=F)
+	myTRarified <- read.table(rarifiedFilePath , sep="\t", header=TRUE,row.names=1, stringsAsFactors=F)
+	
+	for( i  in seq(50,500,50))
+	{
+		myTSub <- stripRare(myT,i)
+		myTNormSub <- stripRare(myTNorm, i)
+		myTRarified <- stripRare(myTRarified, i)
+		
+		myDist <- bcdist(myTSub)
+		myDistNorm <- bcdist(myTNormSub)
+		myDistRarified <- bcdist(myTRarified)
+		
+		
+		
+	}
+}
 
 myT <- read.table("resampled_.txt", sep="\t", header=TRUE,row.names=1,stringsAsFactors=F) 
 myT<- stripRare(myT, 50)
