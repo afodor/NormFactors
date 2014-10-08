@@ -11,30 +11,42 @@ stripRare <- function( myT, numToKeep )
 	myT <- myT[,order(colCounts)]
 	numCols <- ncol(myT)
 	myT <- myT[,(numCols-numToKeep):numCols]
-	
 	return (myT)
 }
 
-getDistances <- function(  rawFilePath, normFilePath, rarifiedFilePath )
+writeDistances <- function(  rawFilePath, normFilePath, rarifiedFilePath, outFilePath )
 {
+	numIncluded <- vector();
+	rawDistances <- vector();
+	normDistances <- vector();
+	rarifiedDistances <- vector();
+
 	myT <- read.table(rawFilePath, sep="\t", header=TRUE,row.names=1,stringsAsFactors=F)
 	myTNorm <-read.table(normFilePath , sep="\t", header=TRUE,row.names=1, stringsAsFactors=F)
 	myTRarified <- read.table(rarifiedFilePath , sep="\t", header=TRUE,row.names=1, stringsAsFactors=F)
+	index <- 1
 	
-	for( i  in seq(50,500,50))
+	for( i  in seq(50,200,50))
 	{
 		myTSub <- stripRare(myT,i)
 		myTNormSub <- stripRare(myTNorm, i)
-		myTRarified <- stripRare(myTRarified, i)
+		myTSubRarified <- stripRare(myTRarified, i)
 		
-		myDist <- bcdist(myTSub)
-		myDistNorm <- bcdist(myTNormSub)
-		myDistRarified <- bcdist(myTRarified)
+		rawDistances[index] <- mean(bcdist(myTSub))
+		normDistances[index]  <- mean(bcdist(myTNormSub))
+		rarifiedDistances[index] <- mean(bcdist(myTSubRarified))
+		
+		numIncluded[index] <- i;
 		
 		
+		index = index + 1;
 		
 	}
+	
+	dFrame <- data.frame( numIncluded ,rawDistances, normDistances , rarifiedDistances ) 
+	write.table( dFrame, file=outFilePath, row.names=FALSE, sep ="\t")
 }
 
-myT <- read.table("resampled_.txt", sep="\t", header=TRUE,row.names=1,stringsAsFactors=F) 
-myT<- stripRare(myT, 50)
+
+writeDistances("resampled_.txt","resampled_relativeAbundance.txt","resampled_rarified.txt", 
+			"resampledCounts.txt")

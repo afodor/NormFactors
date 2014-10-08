@@ -9,12 +9,13 @@ public class WriteNormalized
 {
 	public static void main(String[] args) throws Exception
 	{
-		writeOne( "rnaResampledNonSparse.txt", -1);
+		writeOne("resampled_.txt", -1);
+		//writeOne( "rnaResampledNonSparse.txt", -1);
 		
 		//writeOne("rnaResampled.txt",-1);
 		
 		/*
-		writeOne("resampled_.txt", -1);
+		
 		writeOne("CF_LONG.txt", -1);
 		writeOne("may2013_refOTU_Table-subsetTaxaAsColumnsstoolOnly.filtered.txt", -1);
 		
