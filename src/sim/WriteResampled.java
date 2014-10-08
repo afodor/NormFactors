@@ -113,7 +113,7 @@ public class WriteResampled
 		return a;
 	}
 	
-	public static int[] resample(OtuWrapper wrapper, List<Integer> resampleList, int depth) throws Exception
+	static int[] resample(OtuWrapper wrapper, List<Integer> resampleList, int depth) throws Exception
 	{
 		int[] a = new int[wrapper.getOtuNames().size()];
 		Collections.shuffle(resampleList, RANDOM);
