@@ -1,0 +1,18 @@
+rm(list=ls())
+setwd("C:\\BigDataScalingFactors\\risk\\dirk\\resample");
+
+stripRare <- function( myT, numToKeep )
+{
+	colCounts <- apply(myT, 2, sum)
+	
+	myT <- myT[,order(colCounts)]
+	numCols <- ncol(myT)
+	myT <- myT[,(numCols-numToKeep):numCols]
+	
+	return (myT)
+}
+
+#getDistances (  rawFilePath, normFilePath, rarifiedFilePath )
+
+myT <- read.table("resampled_.txt", sep="\t", header=TRUE,row.names=1,stringsAsFactors=F) 
+myT<- stripRare(myT, 50)
