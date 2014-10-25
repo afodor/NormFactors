@@ -6,7 +6,7 @@ library("phyloseq")
 	
 
 rm(list=ls())
-setwd("C:\\BigDataScalingFactors\\risk\\dirk\\resample");
+setwd("D:\\BigDataScalingFactors\\risk\\dirk\\resample");
 
 stripRare <- function( myT, numToKeep )
 {
@@ -18,6 +18,33 @@ stripRare <- function( myT, numToKeep )
 	return (myT)
 }
 
+getFractionUnder05 <- function( myT , rowCounts)
+{
+	numUnder <- 0
+	myTSorted <- myT[ order(rowCounts),  ];
+	
+	halfway <- floor( nrow(myT) / 2);
+	
+	for( i in 1:ncol(myT))
+	{
+		a <- vector();
+		b <- vector();
+		
+		for( j in 1:halfway)
+			a[j] <- myT[j,i]
+			
+		for( j in (halfway+1) : nrow(myT) )
+			b[j-halfway] <- myT[j,i]
+			
+		if( wilcox.test(a,b)$p.value < 0.05 ) 
+			numUnder = numUnder + 1;
+			
+	}
+	
+	
+	return (numUnder / ncol(myT))
+}
+
 writeDistances <- function(  rawFilePath, normFilePath, rarifiedFilePath, outFilePath )
 {
 	numIncluded <- vector();
@@ -26,6 +53,11 @@ writeDistances <- function(  rawFilePath, normFilePath, rarifiedFilePath, outFil
 	edgeRDistances <- vector();
 	deseqDistances <- vector();
 	rarifiedDistances <- vector();
+	
+	pValuesRaw <- vector()
+	pValuesNorm <- vector()
+	pValuesRarified <- vector()
+	pValuesEdgeR <- vector()
 
 	myT <- read.table(rawFilePath, sep="\t", header=TRUE,row.names=1,stringsAsFactors=F)
 	myTNorm <-read.table(normFilePath , sep="\t", header=TRUE,row.names=1, stringsAsFactors=F)
@@ -53,13 +85,35 @@ writeDistances <- function(  rawFilePath, normFilePath, rarifiedFilePath, outFil
 		myPseudoCounts = myCommonDisp$pseudo.counts;
 		myPseudoCounts = t(myPseudoCounts)
 		edgeRDistances[index] <- mean(bcdist(myPseudoCounts))
+		rowCounts <- apply(myTSub, 1, sum);
+		pValuesRaw[index] <- getFractionUnder05(myTSub,rowCounts)
+		pValuesNorm[index] <- getFractionUnder05(myTNormSub,rowCounts)
+		pValuesRarified[index] <- getFractionUnder05(myTSubRarified,rowCounts)
+		pValuesEdgeR[index] <- getFractionUnder05(myPseudoCounts,rowCounts)
+		
+		deseqT <- myT
+		deseqT <- deseqT + 1
+		deseqT <- t(deseqT )
+		colData <- data.frame(condition=factor(rep( "1", ncol(deseqT))))
+		diagdds = DESeqDataSetFromMatrix(deseqT , colData, formula(~ 1))
+		diagdds = estimateSizeFactors(diagdds )
+		diagdds = estimateDispersions(diagdds, fitType='local')
+		diagvst = getVarianceStabilizedData(diagdds)
+		dseqOut <- otu_table(diagvst, taxa_are_rows=T)
+		dseqOut <- t(dseqOut)
+		deseqDistances <- mean( bcdist(dseqOut) )
 			
 		index = index + 1;
 		
+		dFrame <- data.frame( numIncluded ,rawDistances, normDistances , rarifiedDistances, edgeRDistances, deseqDistances , pValuesRaw,pValuesNorm,pValuesRarified,
+		pValuesEdgeR) 
+		write.table( dFrame, file=paste( "partial_", i, outFilePath), row.names=FALSE, sep ="\t")
 	}
 	
-	dFrame <- data.frame( numIncluded ,rawDistances, normDistances , rarifiedDistances, edgeRDistances) 
-	write.table( dFrame, file=outFilePath, row.names=FALSE, sep ="\t")
+	
+		dFrame <- data.frame( numIncluded ,rawDistances, normDistances , rarifiedDistances, edgeRDistances, deseqDistances ,pValuesRaw,pValuesNorm,pValuesRarified,
+		pValuesEdgeR) 
+		write.table( dFrame, file=outFilePath, row.names=FALSE, sep ="\t")
 }
 
 
