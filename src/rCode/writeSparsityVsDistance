@@ -58,6 +58,7 @@ writeDistances <- function(  rawFilePath, normFilePath, rarifiedFilePath, outFil
 	pValuesNorm <- vector()
 	pValuesRarified <- vector()
 	pValuesEdgeR <- vector()
+	pValuesDeSeq <- vector()
 
 	myT <- read.table(rawFilePath, sep="\t", header=TRUE,row.names=1,stringsAsFactors=F)
 	myTNorm <-read.table(normFilePath , sep="\t", header=TRUE,row.names=1, stringsAsFactors=F)
@@ -91,6 +92,8 @@ writeDistances <- function(  rawFilePath, normFilePath, rarifiedFilePath, outFil
 		pValuesRarified[index] <- getFractionUnder05(myTSubRarified,rowCounts)
 		pValuesEdgeR[index] <- getFractionUnder05(myPseudoCounts,rowCounts)
 		
+		
+		
 		deseqT <- myT
 		deseqT <- deseqT + 1
 		deseqT <- t(deseqT )
@@ -101,21 +104,25 @@ writeDistances <- function(  rawFilePath, normFilePath, rarifiedFilePath, outFil
 		diagvst = getVarianceStabilizedData(diagdds)
 		dseqOut <- otu_table(diagvst, taxa_are_rows=T)
 		dseqOut <- t(dseqOut)
-		deseqDistances <- mean( bcdist(dseqOut) )
+		deseqDistances[index]<- mean( bcdist(dseqOut) )
+		pValuesDeSeq[index] <- 	getFractionUnder05(dseqOut,rowCounts)
+		
+		#deseqDistances[index] <-0
+		#pValuesDeSeq[index] <-0
 			
 		index = index + 1;
 		
 		dFrame <- data.frame( numIncluded ,rawDistances, normDistances , rarifiedDistances, edgeRDistances, deseqDistances , pValuesRaw,pValuesNorm,pValuesRarified,
-		pValuesEdgeR) 
+		pValuesEdgeR, pValuesDeSeq) 
 		write.table( dFrame, file=paste( "partial_", i, outFilePath), row.names=FALSE, sep ="\t")
 	}
 	
-	
-		dFrame <- data.frame( numIncluded ,rawDistances, normDistances , rarifiedDistances, edgeRDistances, deseqDistances ,pValuesRaw,pValuesNorm,pValuesRarified,
-		pValuesEdgeR) 
+		
+		dFrame <- data.frame( numIncluded ,rawDistances, normDistances , rarifiedDistances, edgeRDistances, deseqDistances , pValuesRaw,pValuesNorm,pValuesRarified,
+		pValuesEdgeR, pValuesDeSeq) 
 		write.table( dFrame, file=outFilePath, row.names=FALSE, sep ="\t")
 }
 
 
 writeDistances("resampled_.txt","resampled_relativeAbundance.txt","resampled_rarified.txt", 
-			"resampledCounts.txt")
+			"resampledCountsWithDeseq.txt")

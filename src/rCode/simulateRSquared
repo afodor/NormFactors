@@ -29,7 +29,7 @@ abline(a=0, b=1, col="red", lty=2)
 numBelow <- 0
 for( i in 1:1000)
 {
-	aSim <- simulate( R.sq=0.22)
+	aSim <- simulate( R.sq=0.27)
 	
 	aLm <- lm( aSim$y ~ aSim$x );
 	
